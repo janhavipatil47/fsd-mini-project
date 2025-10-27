@@ -118,12 +118,12 @@ router.delete(
         });
       }
 
-      res.json({
+      return res.json({
         success: true,
         message: 'Recommendation deleted successfully'
       });
     } catch (error) {
-      next(error);
+      return next(error);
     }
   }
 );

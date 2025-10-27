@@ -6,7 +6,7 @@ import { BookRecommendation } from '../models/BookRecommendation.model';
 
 const router = express.Router();
 
-router.get('/global', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/global', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const [analyticsCount, recommendationsCount, topReaders] = await Promise.all([
       ReadingAnalytics.countDocuments(),
@@ -94,7 +94,7 @@ router.get(
   }
 );
 
-router.get('/trending', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/trending', async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const trending = await ReadingAnalytics.aggregate([
       {
