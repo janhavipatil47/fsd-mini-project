@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "postinstall": "npm run build"
   },
   "keywords": ["express", "mongodb", "api", "bookclub"],
   "author": "",
