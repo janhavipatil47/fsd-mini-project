@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { BookOpen, Loader2 } from 'lucide-react';
+import { registerUser } from '../../lib/api';
 
 interface SignupFormProps {
   onToggleMode: () => void;
@@ -14,12 +15,24 @@ export const SignupForm = ({ onToggleMode }: SignupFormProps) => {
   const [fullName, setFullName] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    // Validation checks
+    if (username.length < 3) {
+      setError('Username must be at least 3 characters long');
+      setLoading(false);
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      setError('Username can only contain letters, numbers, and underscores');
+      setLoading(false);
+      return;
+    }
 
     if (password.length < 6) {
       setError('Password must be at least 6 characters long');
@@ -27,40 +40,31 @@ export const SignupForm = ({ onToggleMode }: SignupFormProps) => {
       return;
     }
 
-    const { error } = await signUp(email, password, username, fullName);
+    try {
+      // Step 1: Store credentials in MongoDB
+      await registerUser({
+        username,
+        email,
+        password,
+        fullName,
+      });
 
-    if (error) {
-      setError(error.message);
+      // Step 2: Create account in Supabase (for app functionality)
+      const { error: supabaseError } = await signUp(email, password, username, fullName);
+      
+      if (supabaseError) {
+        setError(supabaseError.message);
+        setLoading(false);
+        return;
+      }
+
+      // Success - Supabase will handle redirect
       setLoading(false);
-    } else {
-      setSuccess(true);
+    } catch (err: any) {
+      setError(err.message || 'Registration failed');
       setLoading(false);
     }
   };
-
-  if (success) {
-    return (
-      <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl">
-        <div className="flex items-center justify-center mb-8">
-          <BookOpen className="w-12 h-12 text-green-600 dark:text-green-400" />
-        </div>
-
-        <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-2">
-          Welcome!
-        </h2>
-        <p className="text-center text-gray-600 dark:text-gray-400 mb-8">
-          Your account has been created successfully. You can now sign in.
-        </p>
-
-        <button
-          onClick={onToggleMode}
-          className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-medium rounded-lg transition-colors duration-200"
-        >
-          Sign In
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full max-w-md p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl">
@@ -92,9 +96,15 @@ export const SignupForm = ({ onToggleMode }: SignupFormProps) => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
+            minLength={3}
+            maxLength={30}
+            pattern="[a-zA-Z0-9_]+"
             className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white transition-all"
             placeholder="bookworm123"
           />
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            3-30 characters, letters, numbers, and underscores only
+          </p>
         </div>
 
         <div>
@@ -136,9 +146,13 @@ export const SignupForm = ({ onToggleMode }: SignupFormProps) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            minLength={6}
             className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 dark:text-white transition-all"
             placeholder="••••••••"
           />
+          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+            At least 6 characters
+          </p>
         </div>
 
         <button

@@ -5,6 +5,7 @@ import { AuthPage } from './components/auth/AuthPage';
 import { Navbar } from './components/layout/Navbar';
 import { Dashboard } from './pages/Dashboard';
 import { Clubs } from './pages/Clubs';
+import { ClubDetail } from './pages/ClubDetail';
 import { Books } from './pages/Books';
 import { Discover } from './pages/Discover';
 import { Profile } from './pages/Profile';
@@ -14,6 +15,7 @@ import { Admin } from './pages/Admin';
 function AppContent() {
   const { user, loading } = useAuth();
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [selectedClubId, setSelectedClubId] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -27,12 +29,26 @@ function AppContent() {
     return <AuthPage />;
   }
 
+  const handleNavigateToClub = (clubId: string) => {
+    setSelectedClubId(clubId);
+    setCurrentPage('club-detail');
+  };
+
+  const handleBackToClubs = () => {
+    setSelectedClubId(null);
+    setCurrentPage('clubs');
+  };
+
   const renderPage = () => {
+    if (currentPage === 'club-detail' && selectedClubId) {
+      return <ClubDetail clubId={selectedClubId} onBack={handleBackToClubs} />;
+    }
+
     switch (currentPage) {
       case 'dashboard':
         return <Dashboard />;
       case 'clubs':
-        return <Clubs />;
+        return <Clubs onNavigateToClub={handleNavigateToClub} />;
       case 'books':
         return <Books />;
       case 'discover':

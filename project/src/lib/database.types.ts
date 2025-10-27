@@ -100,6 +100,7 @@ export interface Database {
           author: string
           description: string | null
           cover_url: string | null
+          pdf_url: string | null
           isbn: string | null
           total_pages: number
           genre: string | null
@@ -113,6 +114,7 @@ export interface Database {
           author: string
           description?: string | null
           cover_url?: string | null
+          pdf_url?: string | null
           isbn?: string | null
           total_pages?: number
           genre?: string | null
@@ -126,11 +128,35 @@ export interface Database {
           author?: string
           description?: string | null
           cover_url?: string | null
+          pdf_url?: string | null
           isbn?: string | null
           total_pages?: number
           genre?: string | null
           published_year?: number | null
           added_by?: string | null
+          created_at?: string
+        }
+      }
+      chat_messages: {
+        Row: {
+          id: string
+          club_id: string
+          user_id: string
+          message: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          club_id: string
+          user_id: string
+          message: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          club_id?: string
+          user_id?: string
+          message?: string
           created_at?: string
         }
       }

@@ -1,0 +1,1 @@
+Write-Host \"Creating user Alice...\" -ForegroundColor Yellow; $body = @{username=\"alice\";email=\"alice@example.com\";password=\"password123\";fullName=\"Alice Johnson\"} | ConvertTo-Json; Invoke-RestMethod -Uri \"http://localhost:3001/api/auth/register\" -Method Post -Body $body -ContentType \"application/json\"

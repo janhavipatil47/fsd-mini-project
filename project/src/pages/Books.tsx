@@ -162,10 +162,10 @@ export const Books = () => {
             return (
               <div
                 key={item.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 <div className="flex flex-col md:flex-row gap-6">
-                  <div className="w-full md:w-32 h-48 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
+                  <div className="w-full md:w-32 h-48 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg overflow-hidden flex-shrink-0 shadow-lg">
                     {book.cover_url ? (
                       <img
                         src={book.cover_url}
@@ -174,7 +174,7 @@ export const Books = () => {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <BookOpen className="w-12 h-12 text-gray-400" />
+                        <BookOpen className="w-12 h-12 text-white" />
                       </div>
                     )}
                   </div>
@@ -188,7 +188,7 @@ export const Books = () => {
                         <p className="text-gray-600 dark:text-gray-400 mb-2">
                           by {book.author}
                         </p>
-                        <span className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
+                        <span className="inline-block px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
                           {club.name}
                         </span>
                       </div>
@@ -216,9 +216,9 @@ export const Books = () => {
                             {progress.toFixed(0)}%
                           </span>
                         </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                           <div
-                            className="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300"
+                            className="bg-gradient-to-r from-blue-500 to-purple-500 h-2.5 rounded-full transition-all duration-300 shadow-sm"
                             style={{ width: `${progress}%` }}
                           />
                         </div>
@@ -242,7 +242,7 @@ export const Books = () => {
                         {item.status !== 'completed' && (
                           <button
                             onClick={() => updateProgress(item.id, book.total_pages, book.total_pages)}
-                            className="px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors text-sm font-medium"
+                            className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white rounded-lg transition-all text-sm font-medium shadow-sm"
                           >
                             Mark Complete
                           </button>

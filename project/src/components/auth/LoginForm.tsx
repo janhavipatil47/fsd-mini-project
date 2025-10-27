@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { BookOpen, Loader2 } from 'lucide-react';
+import { loginUser } from '../../lib/api';
 
 interface LoginFormProps {
   onToggleMode: () => void;
@@ -18,13 +19,25 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
     setError('');
     setLoading(true);
 
-    const { error } = await signIn(email, password);
+    try {
+      // Step 1: Verify credentials with MongoDB
+      await loginUser({ email, password });
 
-    if (error) {
-      setError(error.message);
+      // Step 2: Login to Supabase (for app session)
+      const { error: supabaseError } = await signIn(email, password);
+      
+      if (supabaseError) {
+        setError(supabaseError.message);
+        setLoading(false);
+        return;
+      }
+
+      // Success - Supabase will handle redirect
+      setLoading(false);
+    } catch (err: any) {
+      setError(err.message || 'Login failed');
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
